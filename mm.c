@@ -21,7 +21,7 @@ void * mm_getnewvm (int units){
     printf("VM page allocation failed");
     return NULL;
   }
-
+  memset(vm_page,0,units*SYSTEM_PAGE_SIZE);
   return ( void *)vm_page;
 }
 //function to return page to kernel
@@ -33,7 +33,30 @@ void * mm_getnewvm (int units){
   return;
 }
 
-void * mymalloc(size_t bytes){
+
+meta_data getFreeBin(meta_data head){
+  meta_data a;
+  a = head;
+  while(a->isFree == FALSE && a->next != NULL){
+    a = a->next;
+  }
+
+  return a;
+
+}
+
+
+
+
+
+void * Xmalloc(size_t bytes){
+
+  static int init = FALSE;
+
+  if(init == FALSE){
+    mm_init();
+    SizeClassList_init ();
+  }
 
   if(bytes<= 0)
     return NULL;
@@ -45,9 +68,26 @@ void * mymalloc(size_t bytes){
     while(bytes>classSizeArray[i]){
       i++;
     }
-    meta_data_block ptr, mptr;
-    mm_init();
-    ptr = getPageforAllocation(i);
+    meta_data ptr, mptr;
+    //mm_init();
+    ptr = get_free_page(i);
+
+    int n=0;
+    while(n<MAX_PAGES && sizeClassList[i][n].head != ptr){
+      n++;
+    }
+
+    if(ptr == NULL){
+      //printf("malloc allocation failed");
+      return NULL;
+    }
+    
+
+    mptr = getFreeBin(ptr);
+    mptr->isFree = FALSE;
+    mptr->head = ptr;
+
+    return (void *) (mptr +1);
 
   }
 

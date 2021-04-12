@@ -11,9 +11,9 @@
 
 typedef struct page_list {
 
-    meta_data_block head;
-    int availableBins;
-    // uint32_t class_size;
+    meta_data head;
+    int free_bins;
+    
 }page_list;
 
 extern int classSizeArray[NUM_OF_CLASSES];
@@ -22,9 +22,11 @@ static page_list pageList[MAX_PAGES];
 extern page_list sizeClassList[NUM_OF_CLASSES][MAX_PAGES];
 
 
-void create_size_class_binlist (meta_data_block *head,int binSize, int no_of_pages);
-meta_data_block getPageforAllocation(int sizeclass);
-void createSizeClassPage(int sizeclass,int offset);
+void create_size_class_binlist (meta_data *head,int binSize, int no_of_pages);
+meta_data get_free_page(int sizeclass);
+void allocate_sizeClass_page(int sizeclass,int offset);
+void SizeClassList_init ();
+
 
 
 
