@@ -4,6 +4,7 @@
 #include<sys/mman.h> // for mmap() and munmap() function calls
 #include "mm.h"
 #include"sizeclass.h"
+#include"free_size_list.h"
 
 size_t SYSTEM_PAGE_SIZE = 0;
 
@@ -56,6 +57,10 @@ void * Xmalloc(size_t bytes){
   if(init == FALSE){
     mm_init();
     SizeClassList_init ();
+    init_free_size_list();
+
+    init = TRUE;
+  
   }
 
   if(bytes<= 0)
@@ -68,6 +73,13 @@ void * Xmalloc(size_t bytes){
     while(bytes>classSizeArray[i]){
       i++;
     }
+
+    if(is_freeSizeClassList_empty(i)==FALSE){
+      return (void *)(getfreeBlockfromFreelist(bytes)+1);
+    }
+
+
+
     meta_data ptr, mptr;
     //mm_init();
     ptr = get_free_page(i);
@@ -92,4 +104,8 @@ void * Xmalloc(size_t bytes){
   }
 
 
+}
+
+void * Xfree(size_t bytes){
+  
 }
