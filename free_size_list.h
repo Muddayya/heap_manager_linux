@@ -20,6 +20,7 @@ typedef struct free_size_list{
 
 } free_size_list;
 
+
 extern free_size_list freeSizeClassList[NUM_OF_CLASSES];
 
 void init_free_size_list();

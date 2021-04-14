@@ -29,6 +29,7 @@ int is_freeSizeClassList_empty(int sizeclass) {
             return FALSE;
         }
     }
+    
     return TRUE;
 }
 
