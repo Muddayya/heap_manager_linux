@@ -250,3 +250,46 @@ void Xfree(void *ptr)
   }
   return;
 }
+
+void *XCalloc(size_t num, size_t size)
+{
+
+  void *ptr;
+
+  ptr = Xmalloc(num * size);
+  if (ptr == NULL)
+  {
+    return ptr;
+  }
+  // Initializing it to zero
+  bzero(ptr, num * size);
+  return ptr;
+}
+
+void *XRealloc(void *ptr, size_t size)
+{
+
+  meta_data mptr;
+  if (ptr == NULL)
+    return Xmalloc(size);
+  mptr = ((meta_data)ptr) - 1;
+  if (size < 0)
+    return NULL;
+  if (size == 0)
+  {
+    Xfree(ptr);
+    return NULL;
+  }
+
+  void *newPtr;
+  newPtr = Xmalloc(size);
+  if (newPtr == NULL)
+    return NULL;
+  // Moving contents to the memory to the new allocated location
+  if (mptr->blockSize < size)
+    memmove(newPtr, ptr, mptr->blockSize);
+  else
+    memmove(newPtr, ptr, size);
+  Xfree(ptr);
+  return newPtr;
+}
