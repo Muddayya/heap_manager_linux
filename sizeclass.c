@@ -102,3 +102,57 @@ meta_data get_free_page(int sizeclass){
 
     return NULL;
 }
+
+
+int isSizeClassPageEmpty(int sizeclass, int offset){
+    meta_data ptr;
+    ptr = sizeClassList[sizeclass][offset].head;
+    while (ptr!= NULL)
+    {
+        if(ptr->isFree == FALSE){
+            //printf("there are some aloocated blocks in page")
+            return FALSE;
+        }
+        ptr = ptr->next;
+    }
+
+    return TRUE;
+    
+}
+
+void RemoveEmptypage(int sizeclass, int offset){
+
+    if(isSizeClassPageEmpty(sizeclass, offset)== TRUE){
+
+        int j = MAX_PAGES-1;
+        while(j>=0 && sizeClassList[sizeclass][offset].free_bins == -1 && sizeClassList[sizeclass][offset].head == NULL){
+            j--;
+        }
+
+        if(j==0){
+            if(classSizeArray[sizeclass] == 1024)
+                mm_returnvm(sizeClassList[sizeclass][j].head, 2);
+            else
+                mm_returnvm(sizeClassList[sizeclass][j].head, 1);
+
+            sizeClassList[sizeclass][j].head = NULL;
+            sizeClassList[sizeclass][j].free_bins = -1;
+            return;
+        }
+
+        page_list temp;
+        temp = sizeClassList[sizeclass][offset];
+
+        sizeClassList[sizeclass][offset] = sizeClassList[sizeclass][j];
+        sizeClassList[sizeclass][j] = temp;
+
+        if(classSizeArray[sizeclass] == 1024)
+            mm_returnvm(sizeClassList[sizeclass][j].head, 2);
+        else
+            mm_returnvm(sizeClassList[sizeclass][j].head, 1);
+
+        sizeClassList[sizeclass][j].head = NULL;
+        sizeClassList[sizeclass][j].free_bins = -1;
+    }
+    return;
+}

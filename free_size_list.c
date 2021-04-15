@@ -76,7 +76,7 @@ void removeblockfromFreeSizeCLassList(meta_data ptr, int size){
     freeSizeClassList[i].B[freeSizeClassList[i].rear].blocksize = 0;
     freeSizeClassList[i].rear -= 1;  
 
-
+    return;
 }
 
 

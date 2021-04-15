@@ -27,6 +27,7 @@ void init_free_size_list();
 int is_freeSizeClassList_empty(int sizeclass);
 void removeblockfromFreeSizeCLassList(meta_data ptr, int size);
 void removeAllfreeBlocksFromOffset(int sizeclass, int offset);
-meta_data getfreeBlockfromFreelist(size_t bytes)
+void addBlocktoFreeSizeCLassList(meta_data ptr, int size, int offset);
+meta_data getfreeBlockfromFreelist(size_t bytes);
 
 #endif

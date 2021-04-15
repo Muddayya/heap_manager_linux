@@ -26,5 +26,6 @@ void * mm_getnewvm (int units);
 void mm_returnvm(void *vm_page, int units);
 meta_data getFreeBin(meta_data head);
 void * Xmalloc(size_t bytes);
+void Xfree(void *ptr);
     
 #endif

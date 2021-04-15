@@ -106,6 +106,54 @@ void * Xmalloc(size_t bytes){
 
 }
 
-void * Xfree(size_t bytes){
-  
+void Xfree(void *ptr){
+  meta_data mptr;
+  mptr = ((meta_data)ptr)-1;
+
+  if(mptr == NULL){
+    //printf("cannot free null pointer ")
+    return;
+  }
+
+  if(mptr->isFree == TRUE){
+    //printf("memory is free")
+    return;
+  }
+
+  if(mptr->blockSize < CLASS_SIZE_LIMIT){
+
+    meta_data head;
+    head = mptr->head;
+
+    int i = 0;
+    while(i< NUM_OF_CLASSES && mptr->blockSize > classSizeArray[i]){
+      i++;
+    }
+
+    static int isinit = FALSE;
+
+    if(isinit == FALSE){
+      init_free_size_list();
+      isinit = TRUE;
+    }
+
+    int offset = 0;
+
+    while(offset< MAX_PAGES && head != sizeClassList[i][offset].head){
+      offset++;
+    }
+
+    mptr->isFree = TRUE;
+    if(isSizeClassPageEmpty(i, offset)== TRUE){
+
+      removeAllfreeBlocksFromOffset(i, offset); //remove all the blocks from the page which is empty
+      RemoveEmptypage(i, offset);   // send the empty page back to kernel using munmap fuction call
+      return;
+
+    }
+    else  
+      addBlocktoFreeSizeCLassList(mptr, mptr->blockSize, offset);
+  }
+
+  return;
 }

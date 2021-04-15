@@ -26,7 +26,8 @@ void create_size_class_binlist (meta_data *head,int binSize, int no_of_pages);
 meta_data get_free_page(int sizeclass);
 void allocate_sizeClass_page(int sizeclass,int offset);
 void SizeClassList_init ();
-
+int isSizeClassPageEmpty(int sizeclass, int offset);
+void RemoveEmptypage(int sizeclass, int offset);
 
 
 
