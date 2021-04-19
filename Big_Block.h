@@ -1,5 +1,5 @@
-#ifndef Big_Block.H
-#define Big_Block .H
+#ifndef Big_Block_H
+#define Big_Block_H
 
 #include "mm.h"
 

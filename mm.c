@@ -63,6 +63,7 @@ void *Xmalloc(size_t bytes)
     mm_init();
     SizeClassList_init();
     init_free_size_list();
+    init_freelist(&freeList);
 
     init = TRUE;
   }
@@ -88,11 +89,11 @@ void *Xmalloc(size_t bytes)
     //mm_init();
     ptr = get_free_page(i);
 
-    int n = 0;
-    while (n < MAX_PAGES && sizeClassList[i][n].head != ptr)
-    {
-      n++;
-    }
+    // int n = 0;
+    // while (n < MAX_PAGES && sizeClassList[i][n].head != ptr)
+    // {
+    //   n++;
+    // }
 
     if (ptr == NULL)
     {
@@ -207,11 +208,11 @@ void Xfree(void *ptr)
     meta_data prev = mptr->prev;
     meta_data head;
     // merging next and prev memory blocks if they are free
-    if (next->isFree == TRUE)
+    if (next != NULL && next->isFree == TRUE)
     {
       mergeBigBlock(mptr);
     }
-    if (prev->isFree == TRUE)
+    if (prev != NULL && prev->isFree == TRUE)
     {
       mergeBigBlock(prev);
       if (isBigBlockPageEmpty(prev->head) == TRUE)
@@ -221,7 +222,7 @@ void Xfree(void *ptr)
         for (int i = 0; i <= freeList.rear; i++)
         {
 
-          if (freeList.List[i].blockptr > head == head)
+          if (freeList.List[i].blockptr->head == head)
             deleteBlockfromFreeList(&freeList, freeList.List[i].blocksize, freeList.List[i].blockptr);
         }
         RemoveBigBlockPage(head);
@@ -262,7 +263,7 @@ void *XCalloc(size_t num, size_t size)
     return ptr;
   }
   // Initializing it to zero
-  bzero(ptr, num * size);
+  memset(ptr, 0, num * size);
   return ptr;
 }
 

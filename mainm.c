@@ -3,22 +3,58 @@
 #include <unistd.h>
 #include "mm.h"
 
-typedef struct test
+typedef struct temp
 {
-    int a, b;
-    char c;
+    int a, b, c, d;
+} temp;
 
-} test;
-
-int main(int argc, char **argv)
+typedef struct largealloc
 {
-    test *temp, *tmp1, *tmp2;
-    temp = (test *)Xmalloc(sizeof(test));
-    tmp1 = (test *)Xmalloc(sizeof(test));
-    tmp2 = (test *)Xmalloc(sizeof(test));
 
-    tmp1->a = 4;
-    tmp2->b = 13;
-    printf("%d and %d", tmp1->a, tmp2->b);
+    char arr[1000];
+} largealloc;
+
+int main()
+{
+
+    largealloc *buf;
+    buf = (largealloc *)Xmalloc(sizeof(largealloc));
+
+    int *arr;
+    arr = (int *)Xmalloc(sizeof(int) * 5);
+    for (int i = 0; i < 5; i++)
+    {
+        arr[i] = i;
+    }
+    for (int j = 0; j < 5; j++)
+    {
+        printf("%d ", arr[j]);
+    }
+    printf("\n");
+    arr = (int *)XRealloc(arr, sizeof(int) * 10);
+    for (int i = 5; i < 10; i++)
+    {
+        arr[i] = i;
+    }
+
+    for (int j = 0; j < 10; j++)
+    {
+        printf("%d ", arr[j]);
+    }
+    printf("\n");
+
+    Xfree(buf);
+    printf("free1");
+    Xfree(arr);
+    int size;
+    printf("enter size of array");
+    scanf("%d", &size);
+    int *a;
+    a = (int *)Xmalloc(sizeof(int) * size);
+    if (a == NULL)
+    {
+        printf("gandtay");
+    }
+
     return 0;
 }
